@@ -11,7 +11,7 @@ class Subscribe(object):
         self.__source = {}  # 订阅的各节点
         self.__node = {}    # 订阅的各节点名称
         self.__json_template_pathname = json_template_pathname
-        self.__json_conf_pathname = "./config.json"
+        self.__json_conf_pathname = "/home/raeo/Applications/v2ray_cli/config.json"
         self.update()
 
     def update(self):
@@ -91,19 +91,23 @@ class Subscribe(object):
             conf["outbounds"][index]["settings"]["vnext"][-1]["users"][-1]["alterId"] = int(sub["aid"])
             conf["outbounds"][index]["streamSettings"]["network"] = sub["net"]
 
-            conf["outbounds"][index]["streamSettings"]["security"] = sub["tls"]
-            if sub["tls"] == "tls":
-                conf["outbounds"][index]["streamSettings"]["tlssettings"] = {}
-                conf["outbounds"][index]["streamSettings"]["tlssettings"]["allowInsecure"] = True
-                conf["outbounds"][index]["streamSettings"]["tlssettings"]["serverName"] = sub["host"]
-            else:
-                conf["outbounds"][index]["streamSettings"]["tlssettings"] = {}
+            conf["outbounds"][index]["streamSettings"]["security"] = "none"
+            try:
+              if sub["tls"] == "tls":
+                  conf["outbounds"][index]["streamSettings"]["security"] = sub["tls"]
+
+                  conf["outbounds"][index]["streamSettings"]["tlssettings"] = {}
+                  conf["outbounds"][index]["streamSettings"]["tlssettings"]["allowInsecure"] = True
+                  conf["outbounds"][index]["streamSettings"]["tlssettings"]["serverName"] = ""
+              else:
+                  conf["outbounds"][index]["streamSettings"]["tlssettings"] = {}
+            except KeyError:
+              conf["outbounds"][index]["streamSettings"]["tlssettings"] = {}
 
             if sub["net"] == "ws":
                 conf["outbounds"][index]["streamSettings"]["wssettings"] = {}
                 conf["outbounds"][index]["streamSettings"]["wssettings"]["connectionReuse"] = True
                 conf["outbounds"][index]["streamSettings"]["wssettings"]["headers"] = {}
-                conf["outbounds"][index]["streamSettings"]["wssettings"]["headers"]["Host"] = sub["host"]
                 conf["outbounds"][index]["streamSettings"]["wssettings"]["path"] = sub["path"].replace('\\', '')
             else:
                 conf["outbounds"][index]["streamSettings"]["wssettings"] = {}
@@ -117,4 +121,4 @@ class Subscribe(object):
             return
 
         os.system("killall v2ray")
-        os.system("/usr/bin/v2ray/v2ray ./config.json &")
+        os.system("/usr/bin/v2ray -config /home/raeo/Applications/v2ray_cli/config.json &")

@@ -12,8 +12,8 @@ import os
 import configparser
 from subscribe import Subscribe
 
-cfg_pathname = "./cfg.conf"
-json_template_pathname = "./config.json.template"
+cfg_pathname = "/home/raeo/Applications/v2ray_cli/cfg.conf"
+json_template_pathname = "/home/raeo/Applications/v2ray_cli/config.json.template"
 
 if __name__ == "__main__":
     cfg = configparser.ConfigParser()
